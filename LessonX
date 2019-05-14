@@ -1,0 +1,848 @@
+/////////////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+/////////////////////////////////////////////////////////////////////////////////
+#include <Stdio.h>
+#include "CommonAPI.h"
+#include "LessonX.h"
+int iClickIndex=-1;
+int n=0;
+int a=0;
+extern float fSpeedX,fSpeedY;
+const char name[4][20]={ "kaishiyouxi",  "beijinggushi" , "wanfajieshao","tuichuyouxi"};
+const char dierguanzhangaiwu[8][20]={"dierguanzuo1","dierguanzuo2","dierguanzuo3","dierguanzuo4","dierguanzuo5","dierguankong1","dierguankong2","dierguankong3"};
+const char diyiguanzhangaiwu[8][20]={"diyiguanzuo1","diyiguanzuo2","diyiguanzuo3","diyiguanzuo4","diyiguankong1","diyiguankong2","diyiguankong3","diyiguankong4"};
+const char disanguanzhangaiwu[1][20]={"disanguandimian"};
+const char qiangdaonv[3][15]={"qiangdaonv1","qiangdaonv2","qiangdaonv3"};
+const char qiangdaonan[3][15]={"qiangdaonan1","qiangdaonan2","qiangdaonan3"};
+const char she[3][5]={"she1","she2","she3"};
+const char xiezi[3][10]={"xiezi1","xiezi2","xiezi3"};
+const char xiaobing1[3][15]={"xiaobing11","xiaobing12","xiaobing13"};
+const char xiaobing2[3][15]={"xiaobing21","xiaobing22","xiaobing23"};
+const char niao[4][10]={"niao1","niao2","niao3","niao4"};
+const char jian[4][10]={"jian1","jian2","jian3","jian4"};
+const char bing[2][15]={"bing1","bing2"};
+const char baojianheng[4][20]={"baojianheng1","baojianheng2","baojianheng3","baojianheng4"};
+const char baojianshu[4][20]={"baojianshu1","baojianshu2","baojianshu3","baojianshu4"};
+int dierguanjinglinggeshu;
+int diyiguanjinglinggeshu;
+int disanguanjinglinggeshu;
+int disiguanjinglinggeshu;
+int hp;
+extern float		g_fScreenLeft;		
+extern float		g_fScreenRight;	
+extern float		g_fScreenTop;		
+extern float		g_fScreenBottom	;
+////////////////////////////////////////////////////////////////////////////////
+//
+//
+int			g_iGameState		=	0;		// 游戏状态，0 -- 游戏结束等待开始状态；1 -- 按下空格键开始，初始化游戏；2 -- 游戏进行中
+
+void		GameInit();
+void		GameRun( float fDeltaTime );
+void		GameEnd();
+//==============================================================================
+//
+// 大体的程序流程为：GameMainLoop函数为主循环函数，在引擎每帧刷新屏幕图像之后，都会被调用一次。
+
+
+//==============================================================================
+//
+// 游戏主循环，此函数将被不停的调用，引擎每刷新一次屏幕，此函数即被调用一次
+// 用以处理游戏的开始、进行中、结束等各种状态. 
+// 函数参数fDeltaTime : 上次调用本函数到此次调用本函数的时间间隔，单位：秒
+void GameMainLoop( float	fDeltaTime )
+{
+	switch( g_iGameState )
+	{
+		// 初始化游戏，清空上一局相关数据
+	case 1:
+		{
+			GameInit();
+			g_iGameState	=	2; // 初始化之后，将游戏状态设置为进行中
+		}
+		break;
+
+		// 游戏进行中，处理各种游戏逻辑
+	case 2:
+		{
+			// TODO 修改此处游戏循环条件，完成正确游戏逻辑
+			if( true )
+			{
+				GameRun( fDeltaTime );
+			}
+			else
+			{
+				// 游戏结束。调用游戏结算函数，并把游戏状态修改为结束状态
+				g_iGameState	=	0;
+				GameEnd();
+			}
+		}
+		break;
+
+		// 游戏结束/等待按空格键开始
+	case 0:
+	default:
+		break;
+	};
+}
+
+//==============================================================================
+//
+// 每局开始前进行初始化，清空上一局相关数据
+void GameInit()
+{
+	
+}
+//==============================================================================
+//
+// 每局游戏进行中
+void GameRun( float fDeltaTime )
+{
+	if(n==12&&dierguanjinglinggeshu==0&&hp>0)
+		dSetSpriteVisible( "space", 1 );
+	if(n==12&&hp==0)
+	{
+		dSetSpriteVisible( "game", 1 );
+		g_iGameState=0;
+	}
+	if(n==12)
+		dSetTextValue( "hp1", hp );
+	if(n==7&&diyiguanjinglinggeshu==0&&hp>0)
+		dSetSpriteVisible( "space", 1 );
+	if(n==7&&hp==0)
+	{
+		dSetSpriteVisible( "game", 1 );
+		g_iGameState=0;
+	}
+	if(n==7)
+		dSetTextValue( "hp1", hp );
+	if(n==19&&disanguanjinglinggeshu==0&&hp>0)
+		dSetSpriteVisible( "space", 1 );
+	if(n==19&&hp==0)
+	{
+		dSetSpriteVisible( "game", 1 );
+		g_iGameState=0;
+	}
+	if(n==19)
+		dSetTextValue( "hp1", hp );
+	if(n==22&&disiguanjinglinggeshu==0&&hp>0)
+		dSetSpriteVisible( "space", 1 );
+	if(n==22&&hp==0)
+	{
+		dSetSpriteVisible( "game", 1 );
+		g_iGameState=0;
+	}
+	if(n==22)
+		dSetTextValue( "hp1", hp );
+}
+//==============================================================================
+//
+// 本局游戏结束
+void GameEnd()
+{
+}
+//==========================================================================
+//
+// 鼠标移动
+// 参数 fMouseX, fMouseY：为鼠标当前坐标
+void OnMouseMove( const float fMouseX, const float fMouseY )
+{
+	
+}
+//==========================================================================
+//
+// 鼠标点击
+// 参数 iMouseType：鼠标按键值，见 enum MouseTypes 定义
+// 参数 fMouseX, fMouseY：为鼠标当前坐标
+void OnMouseClick( const int iMouseType, const float fMouseX, const float fMouseY )
+{
+		int iLoop=0;
+	for(iLoop=0;iLoop<4;iLoop++)
+	{
+		if(dIsPointInSprite(name[iLoop],fMouseX,fMouseY))
+		{
+			iClickIndex=iLoop;
+			break;
+		}
+	}
+}
+//==========================================================================
+//
+// 鼠标弹起
+// 参数 iMouseType：鼠标按键值，见 enum MouseTypes 定义
+// 参数 fMouseX, fMouseY：为鼠标当前坐标
+void OnMouseUp( const int iMouseType, const float fMouseX, const float fMouseY )
+{
+		if(iMouseType==0)
+	{
+		switch(iClickIndex)
+		{
+			case 0:
+				{g_iGameState=1;n=1;dLoadMap("duihua_1.t2d");hp=15;break;}
+			case 1:
+				{dLoadMap("beijing.t2d");a=1;
+				break;}
+			case 2:
+				{dLoadMap("wanfajieshao.t2d");a=2;break;}
+			case 3:
+				{}
+		}
+	}
+}
+//==========================================================================
+//
+// 键盘按下
+// 参数 iKey：被按下的键，值见 enum KeyCodes 宏定义
+// 参数 iAltPress, iShiftPress，iCtrlPress：键盘上的功能键Alt，Ctrl，Shift当前是否也处于按下状态(0未按下，1按下)
+void OnKeyDown( const int iKey, const bool bAltPress, const bool bShiftPress, const bool bCtrlPress )
+{	
+		if(( KEY_SPACE == iKey  )&&(a==1))
+		{
+			dLoadMap("chushijiemian.t2d");
+			a=0;
+		}
+		if(( KEY_SPACE == iKey  )&&(a==2))
+		{
+			dLoadMap("chushijiemian.t2d");
+			a=0;
+		}
+		if( KEY_SPACE == iKey  )
+		{
+			if(n==12&&hp==0)
+			{
+				dLoadMap("chushijiemian.t2d");
+				n=0;
+			}
+			if(n==7&&hp==0)
+			{
+				dLoadMap("chushijiemian.t2d");
+				n=0;
+			}
+			if(n==19&&hp==0)
+			{
+				dLoadMap("chushijiemian.t2d");
+				n=0;
+			}
+			switch (n)
+			{
+				case 1:{dLoadMap("diyiguan.t2d");n++;break;}
+				case 2:{dLoadMap("duihua_2.1.t2d");n++;break;}
+				case 3:{dLoadMap("duihua_2.2.t2d");n++;break;}
+				case 4:{dLoadMap("duihua_2.3.t2d");n++;break;}
+				case 5:{dLoadMap("duihua_2.4.t2d");n++;break;}
+				case 6:{dLoadMap("diyiguandadouchangjing.t2d");
+					 diyiguanjinglinggeshu=10;
+					 dSetSpriteVisible( "xuanren_stopd", 1 );
+					 dSetSpriteVisible( "xuanren_d", 0 );
+					 dSetSpriteVisible( "xuanren_jd", 0 );
+					 dSetSpriteVisible( "xuanren_stopa", 0 );
+					 dSetSpriteVisible( "xuanren_a", 0 );
+					 dSetSpriteVisible( "xuanren_ja", 0 );
+					 dSetSpriteVisible( "xuanren_wa", 0 );
+					 dSetSpriteVisible( "xuanren_wd", 0 );
+					 dSetSpriteVisible( "space", 0 );
+					 dSetSpriteVisible( "game", 0 );
+					 dSetSpriteLinearVelocity("qiangdaonv1", 0, 0);
+					 dSetSpriteLinearVelocity("qiangdaonv2", 0, 0);
+					 dSetSpriteLinearVelocity("qiangdaonv3", 0, 0);
+					 dSetSpriteLinearVelocity("qiangdaonan1", 0, 0);
+					 dSetSpriteLinearVelocity("qiangdaonan2", 0, 0);
+					 dSetSpriteLinearVelocity("qiangdaonan3", 0, 0);
+					 dSetSpriteLinearVelocity("jian1", 0, 20);
+					 dSetSpriteLinearVelocity("jian2", 0, 20);
+					 dSetSpriteLinearVelocity("jian3", 0, 20);
+					 dSetSpriteLinearVelocity("jian4", 0, 20);
+					 n++;break;}
+			}
+			if(diyiguanjinglinggeshu==0)
+			{
+				switch(n)
+				{
+					case 7:{dLoadMap("dierguanchangjingduihua.t2d");
+						dSetSpriteVisible( "dierguan", 1 );                                            
+						dSetSpriteVisible( "daoyinbanshenxiang", 0 );
+						dSetSpriteVisible( "dierguanduihua1", 0 );
+						dSetSpriteVisible( "dierguanduihua2", 0 );
+						dSetSpriteVisible( "xuanren", 0 );
+						dSetSpriteVisible( "eyu", 0 );
+						dSetSpriteVisible( "she", 0 );
+						dSetSpriteVisible( "xiezi", 0 );
+						n++;break;}
+					case 8:{dSetSpriteVisible( "dierguan", 0 );
+						dSetSpriteVisible( "daoyinbanshenxiang", 1 );
+						dSetSpriteVisible( "dierguanduihua1", 1 );
+						n++;break;}
+					case 9:{dSetSpriteVisible( "daoyinbanshenxiang", 0 );
+						dSetSpriteVisible( "dierguanduihua1", 0 );
+						dSetSpriteVisible( "xuanren", 1 );
+						dSetSpriteVisible( "eyu", 1 );					
+						dSetSpriteVisible( "she", 1 );
+						dSetSpriteVisible( "xiezi", 1 );
+						n++;break;}
+					case 10:{dSetSpriteVisible( "xuanren", 0 );
+						dSetSpriteVisible( "eyu", 0 );
+						dSetSpriteVisible( "she", 0 );
+						dSetSpriteVisible( "xiezi", 0 );
+						dSetSpriteVisible( "daoyinbanshenxiang", 1 );
+						dSetSpriteVisible( "dierguanduihua2", 1 );
+						n++;break;}
+					case 11:{dLoadMap("dierguandadouchangjing.t2d");
+						dierguanjinglinggeshu=10;
+						dSetSpriteVisible( "xuanren_stopd", 1 );
+						dSetSpriteVisible( "xuanren_d", 0 );
+						dSetSpriteVisible( "xuanren_jd", 0 );
+						dSetSpriteVisible( "xuanren_stopa", 0 );
+						dSetSpriteVisible( "xuanren_a", 0 );
+						dSetSpriteVisible( "xuanren_ja", 0 );
+						dSetSpriteVisible( "xuanren_wa", 0 );
+						dSetSpriteVisible( "xuanren_wd", 0 );
+						dSetSpriteVisible( "space", 0 );
+						dSetSpriteVisible( "game", 0 );
+						dSetSpriteLinearVelocity("xiezi1", 0, 0);
+						dSetSpriteLinearVelocity("xiezi2", 0, 0);
+						dSetSpriteLinearVelocity("xiezi3", 0, 0);
+						dSetSpriteLinearVelocity("she1", 0, 0);
+						dSetSpriteLinearVelocity("she2", 0, 0);
+						dSetSpriteLinearVelocity("she3", 0, 0);
+						dSetSpriteLinearVelocity("niao1", 20, 0);
+						dSetSpriteLinearVelocity("niao2", 20, 0);
+						dSetSpriteLinearVelocity("niao3", 20, 0);
+						dSetSpriteLinearVelocity("niao4", 20, 0);
+						n++;break;}
+				}
+			}
+			if(dierguanjinglinggeshu==0)
+			{
+				switch(n)
+				{
+					case 12:
+						 dLoadMap("disanguanchangjingduihua.t2d");
+						 dSetSpriteVisible("disanguan",1);
+						 dSetSpriteVisible( "daoyinbanshenxiang", 0 );
+						 dSetSpriteVisible( "disanguanduihua1", 0 );
+						 dSetSpriteVisible( "disanguanduihua2", 0 );
+						 dSetSpriteVisible( "disanguanduihua3", 0 );
+						 dSetSpriteVisible( "disanguanduihua4", 0 );
+						 dSetSpriteVisible( "qingchaoguanli", 0 );
+						 dSetSpriteVisible( "xuanren", 0 );
+						 dSetSpriteVisible( "tifayifu", 0 );
+						 n++;break;                              
+					case 13:dSetSpriteVisible( "xuanren", 1 );
+						 dSetSpriteVisible( "tifayifu", 1 );
+						 dSetSpriteVisible("disanguan",0);
+						 n++;break;
+					case 14:dSetSpriteVisible( "xuanren", 0 );
+						 dSetSpriteVisible( "tifayifu", 0 );
+						 dSetSpriteVisible("qingchaoguanli",1);
+						 dSetSpriteVisible( "disanguanduihua1", 1 );
+						 n++;break;
+					case 15:dSetSpriteVisible( "qingchaoguanli", 0 );
+						 dSetSpriteVisible( "disanguanduihua2", 1 );
+						 dSetSpriteVisible("daoyinbanshenxiang",1);
+						 dSetSpriteVisible( "disanguanduihua1", 0 );
+						 n++;break;
+					case 16:dSetSpriteVisible( "qingchaoguanli", 1 );
+						 dSetSpriteVisible( "disanguanduihua3", 1 );
+						 dSetSpriteVisible("daoyinbanshenxiang",0);
+						 dSetSpriteVisible( "disanguanduihua2", 0 );
+						 n++;break;
+					case 17:dSetSpriteVisible( "qingchaoguanli", 0 );
+						 dSetSpriteVisible( "disanguanduihua4", 1 );
+						 dSetSpriteVisible("daoyinbanshenxiang",1);
+						 dSetSpriteVisible("disanguanduihua3",0);
+						 n++;break;
+					case 18:dLoadMap("disanguandadouchangjing.t2d");
+						 disanguanjinglinggeshu=14;
+						 dSetSpriteVisible( "xuanren_stopd", 1 );
+						 dSetSpriteVisible( "xuanren_d", 0 );
+						 dSetSpriteVisible( "xuanren_jd", 0 );
+						 dSetSpriteVisible( "xuanren_stopa", 0 );
+						 dSetSpriteVisible( "xuanren_a", 0 );
+						 dSetSpriteVisible( "xuanren_ja", 0 );
+						 dSetSpriteVisible( "xuanren_wa", 0 );
+						 dSetSpriteVisible( "xuanren_wd", 0 );
+						 dSetSpriteVisible( "space", 0 );
+						 dSetSpriteVisible( "game", 0 );
+						 dSetSpriteLinearVelocity("xiaobing11", 0, 0);
+						 dSetSpriteLinearVelocity("xiaobing12", 0, 0);
+						 dSetSpriteLinearVelocity("xiaobing13", 0, 0);
+						 dSetSpriteLinearVelocity("xiaobing21", 0, 0);
+						 dSetSpriteLinearVelocity("xiaobing22", 0, 0);
+						 dSetSpriteLinearVelocity("xiaobing23", 0, 0);
+						 dSetSpriteLinearVelocity("baojianheng1", -20, 0);
+						 dSetSpriteLinearVelocity("baojianheng2", -20, 0);
+						 dSetSpriteLinearVelocity("baojianheng3", -20, 0);
+						 dSetSpriteLinearVelocity("baojianheng4", -20, 0);
+						 dSetSpriteLinearVelocity("baojianshu1", 0, 20);
+						 dSetSpriteLinearVelocity("baojianshu2", 0, 20);
+						 dSetSpriteLinearVelocity("baojianshu3", 0, 20);
+						 dSetSpriteLinearVelocity("baojianshu4", 0, 20);
+						 n++;break;
+				}                                                    
+			}
+ 			if(disanguanjinglinggeshu==0)
+			{
+				switch(n)
+				{
+					case 19:
+						dLoadMap("disiguanchangjingduihua.t2d");
+						dSetSpriteVisible("disiguan",1);
+						dSetSpriteVisible( "daoyinbanshenxiang", 0 );
+						dSetSpriteVisible( "disiguanduihua1", 0 );
+						n++;break;
+					case 20:
+						dSetSpriteVisible("disiguan",0);
+						dSetSpriteVisible( "daoyinbanshenxiang", 1 );
+						dSetSpriteVisible( "disiguanduihua1", 1 );
+						n++;break;
+					case 21:
+						dLoadMap("disiguandadouchangjing.t2d");
+						disiguanjinglinggeshu=2;
+						dSetSpriteVisible( "xuanren_stopd", 1 );
+						dSetSpriteVisible( "xuanren_d", 0 );
+						dSetSpriteVisible( "xuanren_jd", 0 );
+						dSetSpriteVisible( "xuanren_stopa", 0 );
+						dSetSpriteVisible( "xuanren_a", 0 );
+						dSetSpriteVisible( "xuanren_ja", 0 );
+						dSetSpriteVisible( "xuanren_wa", 0 );
+						dSetSpriteVisible( "xuanren_wd", 0 );
+						dSetSpriteVisible( "space", 0 );
+						dSetSpriteVisible( "game", 0 );
+						n++;break;
+				}
+			}
+			if(disiguanjinglinggeshu==0)
+			{
+				switch(n)
+				{
+					case 22:
+						dLoadMap("ppt1.t2d");
+						n++;break;
+					case 23:
+						dLoadMap("ppt2.t2d");
+						n++;break;
+					case 24:
+						dLoadMap("ppt3.t2d");
+						n++;break;
+					case 25:
+						dLoadMap("ppt4.t2d");
+						n++;break;
+					case 26:
+						dLoadMap("ppt5.t2d");
+						n++;break;
+					case 27:
+						dLoadMap("quanjuzhong.t2d");
+						n++;break;
+					case 28:
+						dLoadMap("chushijiemian.t2d");
+						n=0;break;
+				}
+			}
+		}
+}
+//==========================================================================
+//
+// 键盘弹起
+// 参数 iKey：弹起的键，值见 enum KeyCodes 宏定义
+void OnKeyUp( const int iKey )
+{
+	
+}
+//===========================================================================
+//
+// 精灵与精灵碰撞
+// 参数 szSrcName：发起碰撞的精灵名字
+// 参数 szTarName：被碰撞的精灵名字
+void OnSpriteColSprite( const char *szSrcName, const char *szTarName )
+{
+	int geshu;
+	int i=0;
+	if(n==12)
+	{
+		for(i=0;i<8;i++)
+			if((strstr( szSrcName, "xuanren_stopd" )||strstr( szSrcName, "xuanren_stopa" ))&&(strstr( szTarName, dierguanzhangaiwu[i] )|| strstr( szTarName, diyiguanzhangaiwu[i] )))  
+		{
+			dSetSpriteLinearVelocity("xuanren_d", 0, 0);
+			dSetSpriteLinearVelocity("xuanren_a", 0, 0);
+			dSetSpriteLinearVelocity("xuanren_stopa", 0, 0);
+			dSetSpriteLinearVelocity("xuanren_stopd", 0, 0);
+			dSetSpriteLinearVelocity("xuanren_ja", 0, 0);
+			dSetSpriteLinearVelocity("xuanren_jd", 0, 0);
+			dSetSpriteLinearVelocity("xuanren_wa", 0, 0);
+			dSetSpriteLinearVelocity("xuanren_wd", 0, 0);
+		}
+	}
+	if(n==12)
+	{
+		for(i=0;i<8;i++)
+			for(geshu=0;geshu<3;geshu++)
+		if(strstr( szSrcName, xiezi[geshu] )&&strstr( szTarName, dierguanzhangaiwu[i] ) )  
+			dSetSpriteLinearVelocity(xiezi[geshu], 20, 0);
+		for(i=0;i<8;i++)
+			for(geshu=0;geshu<3;geshu++)
+		if(strstr( szSrcName, she[geshu] )&&strstr( szTarName, dierguanzhangaiwu[i] ) )  
+			dSetSpriteLinearVelocity(she[geshu], 20, 0);
+	}
+	if(n==12&&hp>0)
+	{
+		for(geshu=0;geshu<3;geshu++)
+		{
+			if((dGetSpritePositionX( "xuanren_jd" )<dGetSpritePositionX( she[geshu] ))&&(strstr( szSrcName, "xuanren_jd" )&&strstr( szTarName,she[geshu]  ))&&dIsSpriteVisible( "xuanren_jd" ))
+				{
+					dDeleteSprite( she[geshu] );
+					dierguanjinglinggeshu--;
+				}
+			if((dGetSpritePositionX( "xuanren_ja" )>dGetSpritePositionX( she[geshu] ))&&(strstr( szSrcName, "xuanren_ja" )&&strstr( szTarName,she[geshu]  ))&&dIsSpriteVisible( "xuanren_ja" ))
+				{
+					dDeleteSprite( she[geshu] );
+					dierguanjinglinggeshu--;
+				}
+			if(strstr( szSrcName, "xuanren_stopd" )&&strstr( szTarName,she[geshu]  ))
+				{
+					hp--;
+					dDeleteSprite( she[geshu] );
+					dierguanjinglinggeshu--;
+				}
+		}
+		for(geshu=0;geshu<3;geshu++)
+		{
+			if((dGetSpritePositionX( "xuanren_jd" )<dGetSpritePositionX( xiezi[geshu] ))&&(strstr( szSrcName, "xuanren_jd" )&&strstr( szTarName,xiezi[geshu]  ))&&dIsSpriteVisible( "xuanren_jd" ))
+				{
+					dDeleteSprite( xiezi[geshu] );
+					dierguanjinglinggeshu--;
+				}
+			 if((dGetSpritePositionX( "xuanren_ja" )>dGetSpritePositionX( xiezi[geshu] ))&&(strstr( szSrcName, "xuanren_ja" )&&strstr( szTarName,xiezi[geshu]  ))&&dIsSpriteVisible( "xuanren_ja" ))
+				{
+					dDeleteSprite( xiezi[geshu] );
+					dierguanjinglinggeshu--;
+				}
+			if(strstr( szSrcName, "xuanren_stopd" )&&strstr( szTarName,xiezi[geshu]  ))
+				{
+					hp--;
+					dDeleteSprite( xiezi[geshu] );
+					dierguanjinglinggeshu--;
+				}
+		}
+		for(geshu=0;geshu<4;geshu++)
+		{
+			if((dGetSpritePositionX( "xuanren_jd" )<dGetSpritePositionX( niao[geshu] ))&&(strstr( szSrcName, "xuanren_jd" )&&strstr( szTarName,niao[geshu]  ))&&dIsSpriteVisible( "xuanren_jd" ))
+				{
+					dDeleteSprite( niao[geshu] );
+					dierguanjinglinggeshu--;
+				}
+			if((dGetSpritePositionX( "xuanren_ja" )>dGetSpritePositionX( niao[geshu] ))&&(strstr( szSrcName, "xuanren_ja" )&&strstr( szTarName,niao[geshu]  ))&&dIsSpriteVisible( "xuanren_ja" ))
+				{
+					dDeleteSprite( niao[geshu] );
+					dierguanjinglinggeshu--;
+				}
+			if(strstr( szSrcName, "xuanren_stopd" )&&strstr( szTarName,niao[geshu]  ))
+				{
+					hp--;
+					dDeleteSprite( niao[geshu] );
+					dierguanjinglinggeshu--;
+				}
+		}
+	}
+	if(n==7)
+	{
+		for(i=0;i<8;i++)
+			if((strstr( szSrcName, "xuanren_stopd" )||strstr( szSrcName, "xuanren_stopa" ))&&(strstr( szTarName, diyiguanzhangaiwu[i] )|| strstr( szTarName, diyiguanzhangaiwu[i] )))  
+		{
+			dSetSpriteLinearVelocity("xuanren_d", 0, 0);
+			dSetSpriteLinearVelocity("xuanren_a", 0, 0);
+			dSetSpriteLinearVelocity("xuanren_stopa", 0, 0);
+			dSetSpriteLinearVelocity("xuanren_stopd", 0, 0);
+			dSetSpriteLinearVelocity("xuanren_ja", 0, 0);
+			dSetSpriteLinearVelocity("xuanren_jd", 0, 0);
+			dSetSpriteLinearVelocity("xuanren_wa", 0, 0);
+			dSetSpriteLinearVelocity("xuanren_wd", 0, 0);
+		}
+	}
+	if(n==7)
+	{
+		for(i=0;i<8;i++)
+			for(geshu=0;geshu<3;geshu++)
+		if(strstr( szSrcName, qiangdaonv[geshu] )&&strstr( szTarName, diyiguanzhangaiwu[i] ) )  
+			dSetSpriteLinearVelocity(qiangdaonv[geshu], 20, 0);
+		for(i=0;i<8;i++)
+			for(geshu=0;geshu<3;geshu++)
+		if(strstr( szSrcName, qiangdaonan[geshu] )&&strstr( szTarName, diyiguanzhangaiwu[i] ) )  
+			dSetSpriteLinearVelocity(qiangdaonan[geshu], -20, 0);
+	}
+	if(n==7&&hp>0)
+	{
+		for(geshu=0;geshu<3;geshu++)
+		{
+			if((dGetSpritePositionX( "xuanren_jd" )<dGetSpritePositionX( qiangdaonv[geshu] ))&&(strstr( szSrcName, "xuanren_jd" )&&strstr( szTarName,qiangdaonv[geshu]  ))&&dIsSpriteVisible( "xuanren_jd" ))
+				{
+					dDeleteSprite( qiangdaonv[geshu] );
+					diyiguanjinglinggeshu--;
+				}
+			if((dGetSpritePositionX( "xuanren_ja" )>dGetSpritePositionX( qiangdaonv[geshu] ))&&(strstr( szSrcName, "xuanren_ja" )&&strstr( szTarName,qiangdaonv[geshu]  ))&&dIsSpriteVisible( "xuanren_ja" ))
+				{
+					dDeleteSprite( qiangdaonv[geshu] );
+					diyiguanjinglinggeshu--;
+				}
+			if(strstr( szSrcName, "xuanren_stopd" )&&strstr( szTarName,qiangdaonv[geshu]  ))
+				{
+					hp--;
+					dDeleteSprite( qiangdaonv[geshu] );
+					diyiguanjinglinggeshu--;
+				}
+		}
+		for(geshu=0;geshu<3;geshu++)
+		{
+			if((dGetSpritePositionX( "xuanren_jd" )<dGetSpritePositionX( qiangdaonan[geshu] ))&&(strstr( szSrcName, "xuanren_jd" )&&strstr( szTarName,qiangdaonan[geshu]  ))&&dIsSpriteVisible( "xuanren_jd" ))
+				{
+					dDeleteSprite( qiangdaonan[geshu] );
+					diyiguanjinglinggeshu--;
+				}
+			 if((dGetSpritePositionX( "xuanren_ja" )>dGetSpritePositionX( qiangdaonan[geshu] ))&&(strstr( szSrcName, "xuanren_ja" )&&strstr( szTarName,qiangdaonan[geshu]  ))&&dIsSpriteVisible( "xuanren_ja" ))
+				{
+					dDeleteSprite( qiangdaonan[geshu] );
+					diyiguanjinglinggeshu--;
+				}
+			if(strstr( szSrcName, "xuanren_stopd" )&&strstr( szTarName,qiangdaonan[geshu]  ))
+				{
+					hp--;
+					dDeleteSprite( qiangdaonan[geshu] );
+					diyiguanjinglinggeshu--;
+				}
+		}
+		for(geshu=0;geshu<4;geshu++)
+		{
+			if((dGetSpritePositionX( "xuanren_jd" )<dGetSpritePositionX( jian[geshu] ))&&(strstr( szSrcName, "xuanren_jd" )&&strstr( szTarName,jian[geshu]  ))&&dIsSpriteVisible( "xuanren_jd" ))
+				{
+					dDeleteSprite( jian[geshu] );
+					diyiguanjinglinggeshu--;
+				}
+			if((dGetSpritePositionX( "xuanren_ja" )>dGetSpritePositionX( jian[geshu] ))&&(strstr( szSrcName, "xuanren_ja" )&&strstr( szTarName,jian[geshu]  ))&&dIsSpriteVisible( "xuanren_ja" ))
+				{
+					dDeleteSprite( jian[geshu] );
+					diyiguanjinglinggeshu--;
+				}
+			if(strstr( szSrcName, "xuanren_stopd" )&&strstr( szTarName,jian[geshu]  ))
+				{
+					hp--;
+					dDeleteSprite( jian[geshu] );
+					diyiguanjinglinggeshu--;
+				}
+		}
+	}
+	if(n==19)
+	{
+		for(i=0;i<1;i++)
+			if((strstr( szSrcName, "xuanren_stopd" )||strstr( szSrcName, "xuanren_stopa" ))&&(strstr( szTarName, disanguanzhangaiwu[i] )|| strstr( szTarName, disanguanzhangaiwu[i] )))  
+		{
+			dSetSpriteLinearVelocity("xuanren_d", 0, 0);
+			dSetSpriteLinearVelocity("xuanren_a", 0, 0);
+			dSetSpriteLinearVelocity("xuanren_stopa", 0, 0);
+			dSetSpriteLinearVelocity("xuanren_stopd", 0, 0);
+			dSetSpriteLinearVelocity("xuanren_ja", 0, 0);
+			dSetSpriteLinearVelocity("xuanren_jd", 0, 0);
+			dSetSpriteLinearVelocity("xuanren_wa", 0, 0);
+			dSetSpriteLinearVelocity("xuanren_wd", 0, 0);
+		}
+	}
+	if(n==19)
+	{
+		for(i=0;i<1;i++)
+			for(geshu=0;geshu<3;geshu++)
+		if(strstr( szSrcName, xiaobing1[geshu] )&&strstr( szTarName, disanguanzhangaiwu[i] ) )  
+			dSetSpriteLinearVelocity(xiaobing1[geshu], -20, 0);
+		for(i=0;i<1;i++)
+			for(geshu=0;geshu<3;geshu++)
+		if(strstr( szSrcName, xiaobing2[geshu] )&&strstr( szTarName, disanguanzhangaiwu[i] ) )  
+			dSetSpriteLinearVelocity(xiaobing2[geshu], -20, 0);
+	}
+	if(n==19&&hp>0)
+	{
+		for(geshu=0;geshu<3;geshu++)
+		{
+			if((dGetSpritePositionX( "xuanren_jd" )<dGetSpritePositionX( xiaobing1[geshu] ))&&(strstr( szSrcName, "xuanren_jd" )&&strstr( szTarName,xiaobing1[geshu]  ))&&dIsSpriteVisible( "xuanren_jd" ))
+				{
+					dDeleteSprite( xiaobing1[geshu] );
+					disanguanjinglinggeshu--;
+				}
+			if((dGetSpritePositionX( "xuanren_ja" )>dGetSpritePositionX( xiaobing1[geshu] ))&&(strstr( szSrcName, "xuanren_ja" )&&strstr( szTarName,xiaobing1[geshu]  ))&&dIsSpriteVisible( "xuanren_ja" ))
+				{
+					dDeleteSprite( xiaobing1[geshu] );
+					disanguanjinglinggeshu--;
+				}
+			if(strstr( szSrcName, "xuanren_stopd" )&&strstr( szTarName,xiaobing1[geshu]  ))
+				{
+					hp--;
+					dDeleteSprite( xiaobing1[geshu] );
+					disanguanjinglinggeshu--;
+				}
+		}
+		for(geshu=0;geshu<3;geshu++)
+		{
+			if((dGetSpritePositionX( "xuanren_jd" )<dGetSpritePositionX( xiaobing2[geshu] ))&&(strstr( szSrcName, "xuanren_jd" )&&strstr( szTarName,xiaobing2[geshu]  ))&&dIsSpriteVisible( "xuanren_jd" ))
+				{
+					dDeleteSprite( xiaobing2[geshu] );
+					disanguanjinglinggeshu--;
+				}
+			 if((dGetSpritePositionX( "xuanren_ja" )>dGetSpritePositionX( xiaobing2[geshu] ))&&(strstr( szSrcName, "xuanren_ja" )&&strstr( szTarName,xiaobing2[geshu]  ))&&dIsSpriteVisible( "xuanren_ja" ))
+				{
+					dDeleteSprite( xiaobing2[geshu] );
+					disanguanjinglinggeshu--;
+				}
+			if(strstr( szSrcName, "xuanren_stopd" )&&strstr( szTarName,xiaobing2[geshu]  ))
+				{
+					hp--;
+					dDeleteSprite( xiaobing2[geshu] );
+					disanguanjinglinggeshu--;
+				}
+		}
+		for(geshu=0;geshu<4;geshu++)
+		{
+			if((dGetSpritePositionX( "xuanren_jd" )<dGetSpritePositionX( baojianshu[geshu] ))&&(strstr( szSrcName, "xuanren_jd" )&&strstr( szTarName,baojianshu[geshu]  ))&&dIsSpriteVisible( "xuanren_jd" ))
+				{
+					dDeleteSprite( baojianshu[geshu] );
+					disanguanjinglinggeshu--;
+				}
+			if((dGetSpritePositionX( "xuanren_ja" )>dGetSpritePositionX( baojianshu[geshu] ))&&(strstr( szSrcName, "xuanren_ja" )&&strstr( szTarName,baojianshu[geshu]  ))&&dIsSpriteVisible( "xuanren_ja" ))
+				{
+					dDeleteSprite( baojianshu[geshu] );
+					disanguanjinglinggeshu--;
+				}
+			if(strstr( szSrcName, "xuanren_stopd" )&&strstr( szTarName,baojianshu[geshu]  ))
+				{
+					hp--;
+					dDeleteSprite( baojianshu[geshu] );
+					disanguanjinglinggeshu--;
+				}
+		}
+		for(geshu=0;geshu<4;geshu++)
+		{
+			if((dGetSpritePositionX( "xuanren_jd" )<dGetSpritePositionX( baojianheng[geshu] ))&&(strstr( szSrcName, "xuanren_jd" )&&strstr( szTarName,baojianheng[geshu]  ))&&dIsSpriteVisible( "xuanren_jd" ))
+				{
+					dDeleteSprite( baojianheng[geshu] );
+					disanguanjinglinggeshu--;
+				}
+			if((dGetSpritePositionX( "xuanren_ja" )>dGetSpritePositionX( baojianheng[geshu] ))&&(strstr( szSrcName, "xuanren_ja" )&&strstr( szTarName,baojianheng[geshu]  ))&&dIsSpriteVisible( "xuanren_ja" ))
+				{
+					dDeleteSprite( baojianheng[geshu] );
+					disanguanjinglinggeshu--;
+				}
+			if(strstr( szSrcName, "xuanren_stopd" )&&strstr( szTarName,baojianheng[geshu]  ))
+				{
+					hp--;
+					dDeleteSprite( baojianheng[geshu] );
+					disanguanjinglinggeshu--;
+				}
+		}
+	}
+	if(n==22)
+	{
+		for(geshu=0;geshu<2;geshu++)
+		{
+			if((dGetSpritePositionX( "xuanren_jd" )<dGetSpritePositionX( bing[geshu] ))&&(strstr( szSrcName, "xuanren_jd" )&&strstr( szTarName,bing[geshu]  ))&&dIsSpriteVisible( "xuanren_jd" ))
+				{
+					dDeleteSprite( bing[geshu] );
+					disiguanjinglinggeshu--;
+				}
+			if((dGetSpritePositionX( "xuanren_ja" )>dGetSpritePositionX( bing[geshu] ))&&(strstr( szSrcName, "xuanren_ja" )&&strstr( szTarName,bing[geshu]  ))&&dIsSpriteVisible( "xuanren_ja" ))
+				{
+					dDeleteSprite( bing[geshu] );
+					disiguanjinglinggeshu--;
+				}
+			if(strstr( szSrcName, "xuanren_stopd" )&&strstr( szTarName,bing[geshu]  ))
+				{
+					hp--;
+					dDeleteSprite( bing[geshu] );
+					disiguanjinglinggeshu--;
+				}
+		}
+	}
+}
+//===========================================================================
+//
+// 精灵与世界边界碰撞
+// 参数 szName：碰撞到边界的精灵名字
+// 参数 iColSide：碰撞到的边界 0 左边，1 右边，2 上边，3 下边
+void OnSpriteColWorldLimit( const char *szName, const int iColSide )
+{
+	int bianhao;
+	if(n==12)
+	{
+		for(bianhao=0;bianhao<4;bianhao++)
+		{
+			dSetSpriteWorldLimit(niao[bianhao], WORLD_LIMIT_NULL, g_fScreenLeft, g_fScreenTop, g_fScreenRight, g_fScreenBottom);
+			if(strcmp(szName, niao[bianhao])==0)
+			{
+				if(iColSide == 1)  // 右边
+				{
+					dSetSpriteFlipX(niao[bianhao], true);
+					dSetSpriteLinearVelocity(niao[bianhao], -20, 0);
+				}
+				else if(iColSide == 0)   // 左边
+				{
+					dSetSpriteFlipX(niao[bianhao], false);
+					dSetSpriteLinearVelocity(niao[bianhao], 20, 0);
+				}		
+			}
+		}
+	}
+	if(n==7)
+	{
+		for(bianhao=0;bianhao<4;bianhao++)
+		{
+			dSetSpriteWorldLimit(jian[bianhao], WORLD_LIMIT_NULL, g_fScreenLeft, g_fScreenTop, g_fScreenRight, g_fScreenBottom);
+			if(strcmp(szName, jian[bianhao])==0)
+			{
+				if(iColSide == 3)  // xia边
+				{
+					dSetSpriteFlipY(jian[bianhao], true);
+					dSetSpriteLinearVelocity(jian[bianhao], 0, -20);
+				}
+				else if(iColSide == 2)   // shang边
+				{
+					dSetSpriteFlipY(jian[bianhao], false);
+					dSetSpriteLinearVelocity(jian[bianhao], 0, 20);
+				}		
+			}
+		}
+	}
+	if(n==19)
+	{
+		for(bianhao=0;bianhao<4;bianhao++)
+		{
+			dSetSpriteWorldLimit(baojianheng[bianhao], WORLD_LIMIT_NULL, g_fScreenLeft, g_fScreenTop, g_fScreenRight, g_fScreenBottom);
+			if(strcmp(szName, baojianheng[bianhao])==0)
+			{
+				if(iColSide == 0)  // zuo边
+				{
+					dSetSpriteFlipX(baojianheng[bianhao], true);
+					dSetSpriteLinearVelocity(baojianheng[bianhao], 20, 0);
+				}
+				else if(iColSide == 1)   // you边
+				{
+					dSetSpriteFlipX(baojianheng[bianhao], false);
+					dSetSpriteLinearVelocity(baojianheng[bianhao], -20, 0);
+				}		
+			}
+		}
+		for(bianhao=0;bianhao<4;bianhao++)
+		{
+			dSetSpriteWorldLimit(baojianshu[bianhao], WORLD_LIMIT_NULL, g_fScreenLeft, g_fScreenTop, g_fScreenRight, g_fScreenBottom);
+			if(strcmp(szName, baojianshu[bianhao])==0)
+			{
+				if(iColSide == 3)  // xia边
+				{
+					dSetSpriteFlipY(baojianshu[bianhao], true);
+					dSetSpriteLinearVelocity(baojianshu[bianhao], 0, -20);
+				}
+				else if(iColSide == 2)   // shang边
+				{
+					dSetSpriteFlipY(baojianshu[bianhao], false);
+					dSetSpriteLinearVelocity(baojianshu[bianhao], 0, 20);
+				}		
+			}
+		}
+	}
+}
